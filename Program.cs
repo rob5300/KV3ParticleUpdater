@@ -4,7 +4,8 @@ using KeyValue3Updater.Updaters;
 Updater[] updaters = {
     new RandomColorUpdater(),
     new RandomLifeTimeUpdater(),
-    new RandomRadiusUpdater()
+    new RandomRadiusUpdater(),
+    new RandomSequenceUpdater()
 };
 
 Console.WriteLine("Enter folder to update files in:");
@@ -27,18 +28,16 @@ if(Directory.Exists(targetFolder))
     {
         Directory.CreateDirectory(outputFolder);
     }
-    Console.WriteLine($"Will update files in directory '{targetFolder}'");
+    Log.WriteLine($"Will update files in directory '{targetFolder}'");
 
     foreach (var file in Directory.EnumerateFiles(targetFolder))
     {
         if (Path.GetExtension(file) != ".vpcf") continue;
 
-        Console.WriteLine($"\nWill update '{file}'");
+        Log.WriteLine($"\nWill update '{file}'");
 
         string text = File.ReadAllText(file);
         text = text.Replace("\t", "").Replace("\r", "");
-
-        //var kvSerializer = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
 
         foreach (Updater updater in updaters)
         {
@@ -47,13 +46,16 @@ if(Directory.Exists(targetFolder))
 
         string filename = Path.GetFileName(file);
         File.WriteAllText(Path.Combine(outputFolder, filename), text);
-        Console.WriteLine($"Updated '${filename}'");
+        Log.WriteLine($"Updated '${filename}'");
     }
 }
 else
 {
-    Console.WriteLine("Directory doesnt exist, exiting...");
+    Log.WriteLine("Directory doesnt exist, exiting...");
 }
+
+//Write log to program dir
+Log.WriteToFile(Directory.GetCurrentDirectory());
 
 Console.WriteLine("Done!");
 Console.ReadKey();

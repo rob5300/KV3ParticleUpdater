@@ -18,13 +18,13 @@ namespace KeyValue3Updater
             string classname = GetType().Name;
             foreach (Capture match in matches)
             {
-                Console.WriteLine($"[{classname}] Found match.");
+                Log.WriteLine($"[{classname}] Found match.");
                 var replacement = GetReplacement(match.Value);
                 edited = edited.Replace(match.Value, replacement);
             }
             if(matches.Count == 0)
             {
-                Console.WriteLine($"[{classname}] Found 0 matches and did not update.");
+                Log.WriteLine($"[{classname}] Found 0 matches and did not update.");
             }
 
             return edited;
@@ -35,7 +35,8 @@ namespace KeyValue3Updater
         /// </summary>
         public static string GetLine(ref string input, string key)
         {
-            return Regex.Match(input, $"{key} = .+").Value ?? "";
+            var match = Regex.Match(input, $"{key} = .+");
+            return match == null ? "" : match.Value;
         }
 
         /// <summary>
@@ -48,8 +49,8 @@ namespace KeyValue3Updater
 
         public static float GetLineValue(string line)
         {
-            var match = Regex.Match(line, @"(?<=\= ?)[0-9]{1,}.?[0-9]{1,}", RegexOptions.IgnoreCase);
-            return match != null ? Convert.ToSingle(match.Value) : 0.0f;
+            var match = Regex.Match(line, @"(?<=\= ?""?)-?[0-9]{1,}.?[0-9]*(?=""?)", RegexOptions.IgnoreCase);
+            return !String.IsNullOrEmpty(match.Value) ? Convert.ToSingle(match.Value) : 0.0f;
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace KeyValue3Updater
             }
             catch(Exception)
             {
-                Console.WriteLine($"[GetLineArrayValues] Could not get array value for '{line}'");
+                Log.WriteLine($"[GetLineArrayValues] Could not get array value for '{line}'");
                 return new int[]{ 0, 0, 0 };
             }
         }

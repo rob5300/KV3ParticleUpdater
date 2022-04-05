@@ -3,7 +3,8 @@ using KeyValue3Updater.Updaters;
 
 Updater[] updaters = {
     new RandomColorUpdater(),
-    new RandomLifeTimeUpdater()
+    new RandomLifeTimeUpdater(),
+    new RandomRadiusUpdater()
 };
 
 Console.WriteLine("Enter folder to update files in:");
@@ -32,7 +33,7 @@ if(Directory.Exists(targetFolder))
     {
         if (Path.GetExtension(file) != ".vpcf") continue;
 
-        Console.WriteLine($"Will update '{file}'");
+        Console.WriteLine($"\nWill update '{file}'");
 
         string text = File.ReadAllText(file);
         text = text.Replace("\t", "").Replace("\r", "");

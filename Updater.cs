@@ -22,6 +22,10 @@ namespace KeyValue3Updater
                 var replacement = GetReplacement(match.Value);
                 edited = edited.Replace(match.Value, replacement);
             }
+            if(matches.Count == 0)
+            {
+                Console.WriteLine($"[{classname}] Found 0 matches and did not update.");
+            }
 
             return edited;
         }

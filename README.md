@@ -7,3 +7,4 @@ New things being added as required, anyone is welcome to try to use it.
 - Random Lifetime
 - Random Radius
 - Random Sequence
+- Random Alpha

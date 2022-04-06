@@ -5,7 +5,8 @@ Updater[] updaters = {
     new RandomColorUpdater(),
     new RandomLifeTimeUpdater(),
     new RandomRadiusUpdater(),
-    new RandomSequenceUpdater()
+    new RandomSequenceUpdater(),
+    new RandomAlphaUpdater()
 };
 
 Console.WriteLine("Enter folder to update files in:");

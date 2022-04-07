@@ -9,7 +9,7 @@ namespace KeyValue3Updater.Updaters
             findRegex = GetBlockRegex("C_INIT_RandomColor");
         }
 
-        protected override string GetReplacement(string input)
+        protected override string GetReplacement(ref string input)
         {
             string m_ColorMax = GetLine(ref input, "m_ColorMax");
             int[] colorMax = GetLineArrayValues(m_ColorMax);
@@ -229,7 +229,7 @@ m_Color = [ {0}, {1}, {2}, 255 ]
 ]
 }}
 }}
-}},";
+}}";
 
             return string.Format(replacement, colorMax[0], colorMax[1], colorMax[2], colorMin[0], colorMin[1], colorMin[2]);
         }

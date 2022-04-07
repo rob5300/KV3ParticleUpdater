@@ -6,7 +6,10 @@ Updater[] updaters = {
     new RandomLifeTimeUpdater(),
     new RandomRadiusUpdater(),
     new RandomSequenceUpdater(),
-    new RandomAlphaUpdater()
+    new RandomAlphaUpdater(),
+    new RandomRotationUpdater(),
+    new RandomTrailLengthUpdater(),
+    new RandomYawFlipUpdater()
 };
 
 Console.WriteLine("Enter folder to update files in:");
@@ -31,9 +34,10 @@ if(Directory.Exists(targetFolder))
     }
     Log.WriteLine($"Will update files in directory '{targetFolder}'");
 
-    foreach (var file in Directory.EnumerateFiles(targetFolder))
+    foreach (var file in Directory.EnumerateFiles(targetFolder, "*.vpcf", SearchOption.AllDirectories))
     {
-        if (Path.GetExtension(file) != ".vpcf") continue;
+        //Skip output folder
+        if (Path.GetDirectoryName(file).Contains(outputFolder)) continue;
 
         Log.WriteLine($"\nWill update '{file}'");
 
@@ -46,7 +50,17 @@ if(Directory.Exists(targetFolder))
         }
 
         string filename = Path.GetFileName(file);
-        File.WriteAllText(Path.Combine(outputFolder, filename), text);
+        string fileDir = Path.GetDirectoryName(file);
+        string relativeDir = Path.GetRelativePath(targetFolder, fileDir);
+        string newPath = Path.Combine(outputFolder, relativeDir, filename);
+
+        string newPathDir = Path.GetDirectoryName(newPath);
+        if (!Directory.Exists(newPathDir))
+        {
+            Directory.CreateDirectory(newPathDir);
+        }
+
+        File.WriteAllText(newPath, text);
         Log.WriteLine($"Updated '${filename}'");
     }
 }

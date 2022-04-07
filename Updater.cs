@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 
 namespace KeyValue3Updater
 {
     internal abstract class Updater
     {
+        protected virtual string BlockClassName { get; }
+
         protected Regex findRegex;
+
+        public Updater()
+        {
+            findRegex = GetBlockRegex(BlockClassName);
+        }
 
         public string Process(ref string input)
         {
@@ -19,7 +21,8 @@ namespace KeyValue3Updater
             foreach (Capture match in matches)
             {
                 Log.WriteLine($"[{classname}] Found match.");
-                var replacement = GetReplacement(match.Value);
+                string matchString = match.Value;
+                var replacement = GetReplacement(ref matchString);
                 edited = edited.Replace(match.Value, replacement);
             }
             if(matches.Count == 0)
@@ -44,7 +47,12 @@ namespace KeyValue3Updater
         /// </summary>
         public static Regex GetBlockRegex(string blockClassName)
         {
-            return new Regex(@"{\n?(_class = """ + blockClassName + @"""\n)([^}]+\n?){1,}},?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+        }
+
+        public static string GetBlockRegexString(string blockClassName)
+        {
+            return @"{\n?(_class = """ + blockClassName + @"""\n)([^}]+\n?){1,}}";
         }
 
         public static float GetLineValue(string line)
@@ -74,6 +82,33 @@ namespace KeyValue3Updater
             }
         }
 
-        protected abstract string GetReplacement(string input);
+        protected string GetInitFloatString(ref string input, float randomMin, float randomMax, int outputField)
+        {
+            var m_flOpStartFadeInTime = GetLineValue(GetLine(ref input, "m_flOpStartFadeInTime"));
+            var m_flOpEndFadeInTime = GetLineValue(GetLine(ref input, "m_flOpEndFadeInTime"));
+            var m_flOpStartFadeOutTime = GetLineValue(GetLine(ref input, "m_flOpStartFadeOutTime"));
+            var m_flOpEndFadeOutTime = GetLineValue(GetLine(ref input, "m_flOpEndFadeOutTime"));
+            var m_flOpFadeOscillatePeriod = GetLineValue(GetLine(ref input, "m_flOpFadeOscillatePeriod"));
+
+            string replacement = @"{{
+_class = ""C_INIT_InitFloat""
+m_InputValue = 
+{{
+m_nType = ""PF_TYPE_RANDOM_UNIFORM""
+m_flRandomMin = {0}
+m_flRandomMax = {1}
+}}
+m_nOutputField = ""{7}""
+m_flOpStartFadeInTime = {2}
+m_flOpEndFadeInTime = {3}
+m_flOpStartFadeOutTime = {4}
+m_flOpEndFadeOutTime = {5}
+m_flOpFadeOscillatePeriod = {6}
+}}";
+
+            return string.Format(replacement, randomMin, randomMax, m_flOpStartFadeInTime, m_flOpEndFadeInTime, m_flOpStartFadeOutTime, m_flOpEndFadeOutTime, m_flOpFadeOscillatePeriod, outputField);
+        }
+
+        protected abstract string GetReplacement(ref string input);
     }
 }

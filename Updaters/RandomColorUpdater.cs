@@ -2,7 +2,7 @@
 
 namespace KeyValue3Updater.Updaters
 {
-    internal class RandomColorUpdater : Updater
+    internal class RandomColorUpdater : ReplacementUpdater
     {
         public RandomColorUpdater()
         {
@@ -229,7 +229,7 @@ m_Color = [ {0}, {1}, {2}, 255 ]
 ]
 }}
 }}
-}}";
+}},";
 
             return string.Format(replacement, colorMax[0], colorMax[1], colorMax[2], colorMin[0], colorMin[1], colorMin[2]);
         }

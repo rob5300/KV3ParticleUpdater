@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace KeyValue3Updater.Updaters
 {
-    internal class RandomRotationUpdater : InitFloatUpdaterBase
+    internal class RandomYawUpdater : InitFloatUpdaterBase
     {
-        protected override string BlockClassName => "C_INIT_RandomRotation";
-        protected override int outputField => 4;
+        protected override string BlockClassName => "C_INIT_RandomYaw";
+        protected override int outputField => 12;
 
         protected override string GetReplacement(ref string input)
         {

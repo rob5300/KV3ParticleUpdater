@@ -4,6 +4,9 @@ namespace KeyValue3Updater
 {
     internal abstract class Updater
     {
+        public const float DegToRad = (float)(Math.PI / 180);
+        public const float RadToDeg = (float)(180 / Math.PI);
+
         protected virtual string BlockClassName { get; }
 
         protected Regex findRegex;
@@ -13,25 +16,10 @@ namespace KeyValue3Updater
             findRegex = GetBlockRegex(BlockClassName);
         }
 
-        public string Process(ref string input)
-        {
-            string edited = input;
-            var matches = findRegex.Matches(input);
-            string classname = GetType().Name;
-            foreach (Capture match in matches)
-            {
-                Log.WriteLine($"[{classname}] Found match.");
-                string matchString = match.Value;
-                var replacement = GetReplacement(ref matchString);
-                edited = edited.Replace(match.Value, replacement);
-            }
-            if(matches.Count == 0)
-            {
-                Log.WriteLine($"[{classname}] Found 0 matches and did not update.");
-            }
-
-            return edited;
-        }
+        /// <summary>
+        /// Process and look for matches in the input string
+        /// </summary>
+        public abstract string Process(ref string input);
 
         /// <summary>
         /// Get a single line based on a given key
@@ -52,13 +40,18 @@ namespace KeyValue3Updater
 
         public static string GetBlockRegexString(string blockClassName)
         {
-            return @"{\n?(_class = """ + blockClassName + @"""\n)([^}]+\n?){1,}}";
+            return @"{\n?(_class = """ + blockClassName + @"""\n)([^}]+\n?){1,}},";
         }
 
-        public static float GetLineValue(string line)
+        public static float GetLineValueFloat(string line)
         {
-            var match = Regex.Match(line, @"(?<=\= ?""?)-?[0-9]{1,}.?[0-9]*(?=""?)", RegexOptions.IgnoreCase);
-            return !String.IsNullOrEmpty(match.Value) ? Convert.ToSingle(match.Value) : 0.0f;
+            var match = GetLineValue(line);
+            return !String.IsNullOrEmpty(match) ? Convert.ToSingle(match) : 0.0f;
+        }
+
+        public static string GetLineValue(string line)
+        {
+            return Regex.Match(line, @"(?<=\= ?""?)-?[0-9]{1,}.?[0-9]*(?=""?)", RegexOptions.IgnoreCase).Value;
         }
 
         /// <summary>
@@ -84,11 +77,11 @@ namespace KeyValue3Updater
 
         protected string GetInitFloatString(ref string input, float randomMin, float randomMax, int outputField)
         {
-            var m_flOpStartFadeInTime = GetLineValue(GetLine(ref input, "m_flOpStartFadeInTime"));
-            var m_flOpEndFadeInTime = GetLineValue(GetLine(ref input, "m_flOpEndFadeInTime"));
-            var m_flOpStartFadeOutTime = GetLineValue(GetLine(ref input, "m_flOpStartFadeOutTime"));
-            var m_flOpEndFadeOutTime = GetLineValue(GetLine(ref input, "m_flOpEndFadeOutTime"));
-            var m_flOpFadeOscillatePeriod = GetLineValue(GetLine(ref input, "m_flOpFadeOscillatePeriod"));
+            var m_flOpStartFadeInTime = GetLineValueFloat(GetLine(ref input, "m_flOpStartFadeInTime"));
+            var m_flOpEndFadeInTime = GetLineValueFloat(GetLine(ref input, "m_flOpEndFadeInTime"));
+            var m_flOpStartFadeOutTime = GetLineValueFloat(GetLine(ref input, "m_flOpStartFadeOutTime"));
+            var m_flOpEndFadeOutTime = GetLineValueFloat(GetLine(ref input, "m_flOpEndFadeOutTime"));
+            var m_flOpFadeOscillatePeriod = GetLineValueFloat(GetLine(ref input, "m_flOpFadeOscillatePeriod"));
 
             string replacement = @"{{
 _class = ""C_INIT_InitFloat""
@@ -104,11 +97,9 @@ m_flOpEndFadeInTime = {3}
 m_flOpStartFadeOutTime = {4}
 m_flOpEndFadeOutTime = {5}
 m_flOpFadeOscillatePeriod = {6}
-}}";
+}},";
 
             return string.Format(replacement, randomMin, randomMax, m_flOpStartFadeInTime, m_flOpEndFadeInTime, m_flOpStartFadeOutTime, m_flOpEndFadeOutTime, m_flOpFadeOscillatePeriod, outputField);
         }
-
-        protected abstract string GetReplacement(ref string input);
     }
 }

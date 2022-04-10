@@ -2,7 +2,7 @@
 
 namespace KeyValue3Updater.Updaters
 {
-    internal class RandomYawFlipUpdater : Updater
+    internal class RandomYawFlipUpdater : ReplacementUpdater
     {
         public RandomYawFlipUpdater()
         {

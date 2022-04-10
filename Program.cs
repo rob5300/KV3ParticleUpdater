@@ -1,5 +1,6 @@
 ﻿using KeyValue3Updater;
 using KeyValue3Updater.Updaters;
+using System.Text.RegularExpressions;
 
 Updater[] updaters = {
     new RandomColorUpdater(),
@@ -9,10 +10,14 @@ Updater[] updaters = {
     new RandomAlphaUpdater(),
     new RandomRotationUpdater(),
     new RandomTrailLengthUpdater(),
-    new RandomYawFlipUpdater()
+    new RandomYawFlipUpdater(),
+    new RandomRotationSpeedUpdater(),
+    new RemapCPtoVectorUpdater(),
+    new RandomYawUpdater()
 };
 
-Console.WriteLine("Enter folder to update files in:");
+Console.WriteLine("KeyValue3Updater by rob5300. (github.com/rob5300/KeyValue3Updater)");
+Console.WriteLine("-= Input folder to update files in: (Press enter to begin or leave blank to process the current folder)");
 
 string targetFolder = Console.ReadLine();
 
@@ -32,17 +37,19 @@ if(Directory.Exists(targetFolder))
     {
         Directory.CreateDirectory(outputFolder);
     }
-    Log.WriteLine($"Will update files in directory '{targetFolder}'");
+    Log.WriteLine($"-= Will update files in directory '{targetFolder}'");
 
     foreach (var file in Directory.EnumerateFiles(targetFolder, "*.vpcf", SearchOption.AllDirectories))
     {
         //Skip output folder
         if (Path.GetDirectoryName(file).Contains(outputFolder)) continue;
 
-        Log.WriteLine($"\nWill update '{file}'");
+        Log.WriteLine($"\n-= Will update '{file}'");
 
         string text = File.ReadAllText(file);
         text = text.Replace("\t", "").Replace("\r", "");
+        //Remove all space blocks that are more than 1 in length (hopefully just visual formatting)
+        text = Regex.Replace(text, @" {2,}", "");
 
         foreach (Updater updater in updaters)
         {
@@ -61,12 +68,12 @@ if(Directory.Exists(targetFolder))
         }
 
         File.WriteAllText(newPath, text);
-        Log.WriteLine($"Updated '${filename}'");
+        Log.WriteLine($"-= Updated '${filename}'");
     }
 }
 else
 {
-    Log.WriteLine("Directory doesnt exist, exiting...");
+    Log.WriteLine("-= Directory doesnt exist, exiting...");
 }
 
 //Write log to program dir

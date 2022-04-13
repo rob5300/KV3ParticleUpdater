@@ -15,16 +15,20 @@ namespace KeyValue3Updater
 
         public override string Process(ref string input)
         {
-            var matches = findRegex.Matches(input);
             string classname = GetType().Name;
-            foreach (Capture match in matches)
+            Match match = findRegex.Match(input);
+            if (match == null || !match.Success)
             {
-                Log.WriteLine($"[{classname}] Found match to move and insert elsewhere.");
+                Log($"[{classname}] Found 0 matches and did not update.");
+            }
+            while (match != null && match.Success)
+            {
+                Log($"[{classname}] Found match to move and insert elsewhere.");
 
                 //Increase match length by 1 to include a comma if found.
                 var length = match.Length;
                 char afterChar = input[match.Index + length];
-                if(afterChar == '\n')
+                if (afterChar == '\n')
                 {
                     length += 1;
                 }
@@ -32,12 +36,10 @@ namespace KeyValue3Updater
                 //Remove block from old container block
                 input = input.Remove(match.Index, length);
                 //Insert block into new destination container block
-                return InsertBlock(ref input, match.Value);
+                input = InsertBlock(ref input, match.Value);
+                match = findRegex.Match(input);
             }
-            if (matches.Count == 0)
-            {
-                Log.WriteLine($"[{classname}] Found 0 matches and did not update.");
-            }
+
             return input;
         }
 
@@ -84,8 +86,9 @@ namespace KeyValue3Updater
 
             //Insert new block 1 before the end of the match to be inside the desired section
             int insertIndex = matchIndex + matchLength - 1;
-            var newString = toUpdate.Insert(insertIndex, GetBlockToInsert(foundBlock) + "\n");
-            Log.WriteLine($"[{GetType().Name}] Inserted block successfully.");
+            string newToInsert = GetBlockToInsert(foundBlock) + "\n";
+            var newString = toUpdate.Insert(insertIndex, newToInsert);
+            Log($"[{GetType().Name}] Inserted block successfully.");
             return newString;
         }
 

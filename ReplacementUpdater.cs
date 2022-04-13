@@ -6,16 +6,17 @@ namespace KeyValue3Updater
     {
         public override string Process(ref string input)
         {
-            var matches = findRegex.Matches(input);
             string classname = GetType().Name;
-            foreach (Capture match in matches)
+            Match match = findRegex.Match(input);
+            if (match == null || !match.Success)
             {
-                Log.WriteLine($"[{classname}] Found match.");
-                return ProcessMatch(ref input, match);
+                Log($"[{classname}] Found 0 matches and did not update.");
             }
-            if (matches.Count == 0)
+            while(match != null && match.Success)
             {
-                Log.WriteLine($"[{classname}] Found 0 matches and did not update.");
+                Log($"[{classname}] Found match.");
+                input = ProcessMatch(ref input, match);
+                match = findRegex.Match(input);
             }
             return input;
         }

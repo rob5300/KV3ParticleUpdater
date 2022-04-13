@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace KeyValue3Updater
 {
@@ -8,18 +9,33 @@ namespace KeyValue3Updater
         public const float RadToDeg = (float)(180 / Math.PI);
 
         protected virtual string BlockClassName { get; }
-
         protected Regex findRegex;
+
+        private StringBuilder logOutputBuilder;
 
         public Updater()
         {
-            findRegex = GetBlockRegex(BlockClassName);
+            logOutputBuilder = new StringBuilder();
+            if (findRegex == null)
+            {
+                findRegex = GetBlockRegex(BlockClassName);
+            }
         }
 
         /// <summary>
         /// Process and look for matches in the input string
         /// </summary>
         public abstract string Process(ref string input);
+
+        protected void Log(string text)
+        {
+            logOutputBuilder.AppendLine(text);
+        }
+
+        public void SetLogBuilder(StringBuilder builder)
+        {
+            logOutputBuilder = builder;
+        }
 
         /// <summary>
         /// Get a single line based on a given key
@@ -35,12 +51,13 @@ namespace KeyValue3Updater
         /// </summary>
         public static Regex GetBlockRegex(string blockClassName)
         {
-            return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled | RegexOptions.Singleline);
         }
 
         public static string GetBlockRegexString(string blockClassName)
         {
-            return @"{\n?(_class = """ + blockClassName + @"""\n)([^}]+\n?){1,}},";
+            return @"({\n?_class = """ + blockClassName + @"""\n)[^}]+((.[^}])(.[^,]))+},";
+            //return @"{\n?(_class = """ + blockClassName + @"""\n)(.?\n?[^},]){1,}(},){1}";
         }
 
         public static float GetLineValueFloat(string line)
@@ -57,7 +74,7 @@ namespace KeyValue3Updater
         /// <summary>
         /// Get 3 array values from a line
         /// </summary>
-        public static int[] GetLineArrayValues(string line)
+        public int[] GetLineArrayValues(string line)
         {
             var matches = Regex.Match(line, @"(?<=\[) ?(\d+), ?(\d+), ?(\d+) ?(?=\])").Groups;
             try
@@ -70,7 +87,7 @@ namespace KeyValue3Updater
             }
             catch(Exception)
             {
-                Log.WriteLine($"[GetLineArrayValues] Could not get array value for '{line}'");
+                Log($"[GetLineArrayValues] Could not get array value for '{line}'");
                 return new int[]{ 0, 0, 0 };
             }
         }

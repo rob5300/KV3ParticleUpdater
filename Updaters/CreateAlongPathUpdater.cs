@@ -19,7 +19,8 @@ namespace KeyValue3Updater.Updaters
             var m_flOpEndFadeOutTime = GetLineValueFloat(GetLine(ref input, "m_flOpEndFadeOutTime"));
             var m_flOpFadeOscillatePeriod = GetLineValueFloat(GetLine(ref input, "m_flOpFadeOscillatePeriod"));
 
-            string replacement = @"_class = ""C_INIT_CreateSequentialPathV2""
+            string replacement = @"{{
+_class = ""C_INIT_CreateSequentialPathV2""
 m_fMaxDistance = {0}
 m_flOpStartFadeInTime = {1}
 m_flOpEndFadeInTime = {2}
@@ -37,7 +38,8 @@ m_flMidPoint = 1.0
 m_vStartPointOffset = [1.0, 0.0, 0.0]
 m_vMidPointOffset = [1.0, 0.0, 0.0]
 m_vEndOffset = [1.0, 0.0, 0.0]
-}}";
+}}
+}},";
             return string.Format(replacement, maxDistance, m_flOpStartFadeInTime, m_flOpEndFadeInTime, m_flOpStartFadeOutTime, m_flOpEndFadeOutTime, m_flOpFadeOscillatePeriod);
         }
     }

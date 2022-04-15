@@ -17,7 +17,8 @@ namespace KeyValue3Updater.Updaters
         private static string overbrightInsert = @"m_flOverbrightFactor = 
 {
 m_flLiteralValue = 5.0
-}";
+}
+";
 
         public override string Process(ref string input)
         {
@@ -33,7 +34,7 @@ m_flLiteralValue = 5.0
             for(int i = matches.Count - 1; i >= 0; i--)
             {
                 Match m = matches[i];
-                if(m.Value.Contains(@"m_hTexture = resource:""materials/particle/flamethrowerfire/flamethrowerfire102.vtex""") && !m.Value.Contains(overbrightInsert))
+                if(m.Value.Contains(@"m_hTexture = resource:""materials/particle/flamethrowerfire/flamethrowerfire102.vtex""") && !m.Value.Contains("m_flOverbrightFactor"))
                 {
                     int offset = m.Value.LastIndexOf("}");
                     input = input.Insert(m.Index + offset, overbrightInsert);

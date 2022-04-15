@@ -5,6 +5,8 @@ namespace KeyValue3Updater
 {
     internal abstract class Updater
     {
+        private const string LineValueRegex = @"(?<=\= ?""?)-?[0-9]{1,}.?[0-9]*(?=""?)";
+
         public const float DegToRad = (float)(Math.PI / 180);
         public const float RadToDeg = (float)(180 / Math.PI);
 
@@ -51,12 +53,12 @@ namespace KeyValue3Updater
         /// </summary>
         public static Regex GetBlockRegex(string blockClassName)
         {
-            return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled | RegexOptions.Singleline);
+            return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled);
         }
 
         public static string GetBlockRegexString(string blockClassName)
         {
-            return @"({\n?_class = """ + blockClassName + @"""\n)[^}]+((.[^}])(.[^,]))+},";
+            return @"({\n?_class = """ + blockClassName + @"""\n)([^}]|((.[^}])(.[^,])))+},";
             //return @"{\n?(_class = """ + blockClassName + @"""\n)(.?\n?[^},]){1,}(},){1}";
         }
 
@@ -68,7 +70,12 @@ namespace KeyValue3Updater
 
         public static string GetLineValue(string line)
         {
-            return Regex.Match(line, @"(?<=\= ?""?)-?[0-9]{1,}.?[0-9]*(?=""?)", RegexOptions.IgnoreCase).Value;
+            return Regex.Match(line, LineValueRegex, RegexOptions.IgnoreCase).Value;
+        }
+
+        public static string ReplaceLineValue(string line, string newValue)
+        {
+            return Regex.Replace(line, LineValueRegex, newValue, RegexOptions.IgnoreCase);
         }
 
         /// <summary>

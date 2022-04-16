@@ -3,9 +3,13 @@ using System.Text.RegularExpressions;
 
 namespace KeyValue3Updater
 {
+    /// <summary>
+    /// Base class for all Updaters
+    /// </summary>
     internal abstract class Updater
     {
         private const string LineValueRegex = @"(?<=\= ?""?)-?[0-9]{1,}.?[0-9]*(?=""?)";
+        private const string LineArrayValueRegex = @"(?<=\[) ?(\d+), ?(\d+), ?(\d+) ?(?=\])";
 
         public const float DegToRad = (float)(Math.PI / 180);
         public const float RadToDeg = (float)(180 / Math.PI);
@@ -56,10 +60,14 @@ namespace KeyValue3Updater
             return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled);
         }
 
+        /// <summary>
+        /// Get regex to find a whole class block with the given class name.
+        /// </summary>
+        /// <param name="blockClassName">The '_class' name</param>
+        /// <returns></returns>
         public static string GetBlockRegexString(string blockClassName)
         {
-            return @"({\n?_class = """ + blockClassName + @"""\n)([^}]|((.[^}])(.[^,])))+},";
-            //return @"{\n?(_class = """ + blockClassName + @"""\n)(.?\n?[^},]){1,}(},){1}";
+            return @"({\n?_class = """ + blockClassName + @"""\n)([^}]|([^}][^,]))+},";
         }
 
         public static float GetLineValueFloat(string line)
@@ -83,7 +91,7 @@ namespace KeyValue3Updater
         /// </summary>
         public int[] GetLineArrayValues(string line)
         {
-            var matches = Regex.Match(line, @"(?<=\[) ?(\d+), ?(\d+), ?(\d+) ?(?=\])").Groups;
+            var matches = Regex.Match(line, LineArrayValueRegex).Groups;
             try
             {
                 int[] values = new int[3];

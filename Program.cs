@@ -4,12 +4,13 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
+//Find all Updaters to be used
 var currentAssembly = Assembly.GetCallingAssembly();
 var updaterType = typeof(Updater);
 var UpdaterTypes = currentAssembly.GetTypes().Where(x => !x.IsAbstract && x.IsSubclassOf(updaterType)).ToArray();
 
 Console.WriteLine("KeyValue3Updater by rob5300. (github.com/rob5300/KeyValue3Updater)");
-Console.WriteLine("-= Input folder to update files in: (Press enter to begin or leave blank to process the current folder)");
+Console.WriteLine("-= Input folder to update files in: (Press enter to begin. Leave blank to process the current folder)");
 
 string targetFolder = Console.ReadLine();
 string outputFolder;
@@ -59,6 +60,7 @@ if(Directory.Exists(targetFolder))
         );
     }
 
+    //Wait for all tasks to complete or time out in 10 mins.
     Task.WaitAll(tasks.ToArray(), 10 * 60 * 60 * 1000);
 
     //Write log to program dir
@@ -73,7 +75,9 @@ else
 }
 Console.ReadKey();
 
-
+/// <summary>
+/// Update a list of files
+/// </summary>
 void UpdateFiles(string[] fileList)
 {
     //Create a new set of updaters and log string builder.
@@ -83,6 +87,7 @@ void UpdateFiles(string[] fileList)
     foreach (Type type in UpdaterTypes)
     {
         Updater newUpdater = (Updater)Activator.CreateInstance(type);
+        //Set where to log to
         newUpdater.SetLogBuilder(logBuilder);
         updaters.Add(newUpdater);
     }
@@ -95,10 +100,14 @@ void UpdateFiles(string[] fileList)
     }
 }
 
+/// <summary>
+/// Update a single file, using the provided updaters. Write log data to given StringBuilder.
+/// </summary>
 void ProcessFile(string file, IEnumerable<Updater> updaters, StringBuilder logBuilder)
 {
     logBuilder.AppendLine($"\n-= Processing File: '{file}'");
     string text = File.ReadAllText(file);
+    //Remove tabs and carrage return chars (to make expressions work with new lines)
     text = text.Replace("\t", "").Replace("\r", "");
     //Remove all space blocks that are more than 1 in length (hopefully just visual formatting)
     text = Regex.Replace(text, @" {2,}", "");

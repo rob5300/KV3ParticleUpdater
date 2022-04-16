@@ -1,32 +1,34 @@
-# KeyValue3Updater
+# KeyValue3Updater for S&Box
 Update old KeyValues3 particle features to new versions for S&Box.
 
+Made for TF:S2 so may not convert all particle features, but most should be covered.
+
 ## Adding new Updaters
-For features that become *C_INIT_InitFloat* make a new class implementing *InitFloatUpdaterBase*
-```
-internal class MyNewUpdater : InitFloatUpdaterBase
-{
-        protected override string BlockClassName => "C_INIT_ClassNameHere";
-        protected override int outputField => 0;
-        protected override string randomMinKey => "minKey";
-        protected override string randomMaxKey => "maxKey";
-}
-```
-For other cases, add a new class implementing Updater and use the existing classes as examples to create the find regex and replacement.
+Check existing updaters to see how to make a new updater. Covered use cases are:
 
-*InsertUpdater* can be used to move a block from an old location to a new one, and update some things too.
+- Move block to new block (e.g. move to operators)
+- Replace an old block with new data
+- Insert some data into an existing block
+- Update a block to "C_INIT_InitFloat"
 
-Update *updaters* in Program.cs to add a new updater to be used.
+Any new Updater type added is automatically used.
 
-## Currently Updated:
-- Random Colour
-- Random Lifetime
-- Random Radius
-- Random Sequence
-- Random Alpha
-- Random Rotation
-- Random Trail Length
-- **Remove** Random Yaw Flip
-- Random Rotation Speed
-- Move RemapCPToVector to operators
-- Random Yaw
+## Currently updated particle features:
+- Age Noise (Remove)
+- CreateAlongPath
+- CreateSequentialPath
+- CreationNoise
+- *Custom overbright addition for some sprites*
+- PositionWarp
+- RandomAlpha
+- RandomColor
+- RandomLifeTime
+- RandomRadius
+- RandomRotaionSpeed
+- RandomSecondSequence
+- RandomSequence
+- RandomTrailLength
+- RandomYawFlip
+- RandomYaw
+- RemapCpToVector
+- RemapScalar

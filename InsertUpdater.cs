@@ -2,6 +2,9 @@
 
 namespace KeyValue3Updater
 {
+    /// <summary>
+    /// Updater that takes a block and inserts it elsewhere in a file
+    /// </summary>
     internal abstract class InsertUpdater : Updater
     {
         protected virtual string InsertContainerBlockName { get; }
@@ -47,6 +50,7 @@ namespace KeyValue3Updater
         {
             int matchIndex;
             int matchLength;
+            //Find the start of the desired destination block
             var match = insertBlockRegex.Match(toUpdate);
             if(match == null || string.IsNullOrEmpty(match.Value))
             {

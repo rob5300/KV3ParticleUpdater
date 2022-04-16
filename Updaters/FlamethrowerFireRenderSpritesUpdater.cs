@@ -13,7 +13,6 @@ namespace KeyValue3Updater.Updaters
     internal class FlamethrowerFireRenderSpritesUpdater : Updater
     {
         protected override string BlockClassName => "C_OP_RenderSprites";
-
         private static string overbrightInsert = @"m_flOverbrightFactor = 
 {
 m_flLiteralValue = 5.0

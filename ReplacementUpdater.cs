@@ -2,6 +2,9 @@
 
 namespace KeyValue3Updater
 {
+    /// <summary>
+    /// Updater that replaces a block with an changed/new block
+    /// </summary>
     internal abstract class ReplacementUpdater : Updater
     {
         public override string Process(ref string input)

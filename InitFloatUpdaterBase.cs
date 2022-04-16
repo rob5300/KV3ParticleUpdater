@@ -1,5 +1,8 @@
 ﻿namespace KeyValue3Updater
 {
+    /// <summary>
+    /// Updater to update a block to a C_INIT_InitFloat class type with a desired outputField.
+    /// </summary>
     internal abstract class InitFloatUpdaterBase : ReplacementUpdater
     {
         protected virtual int outputField => 0;

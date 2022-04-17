@@ -76,6 +76,12 @@ namespace KeyValue3Updater
             return !String.IsNullOrEmpty(match) ? Convert.ToSingle(match) : 0.0f;
         }
 
+        public static int GetLineValueInt(string line)
+        {
+            var match = GetLineValue(line);
+            return !String.IsNullOrEmpty(match) ? Convert.ToInt32(match) : 0;
+        }
+
         public static string GetLineValue(string line)
         {
             return Regex.Match(line, LineValueRegex, RegexOptions.IgnoreCase).Value;

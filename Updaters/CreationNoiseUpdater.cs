@@ -17,9 +17,12 @@ namespace KeyValue3Updater.Updaters
             newString = newString.Replace("m_flNoiseScale =", "m_flNoiseAnimationTimeScale =");
 
             var noiseScaleLine = GetLine(ref foundBlock, "m_flNoiseScaleLoc");
-            var newNoiseScaleLine = $"m_fl4NoiseScale = {GetLineValueFloat(noiseScaleLine) / 1000f}";
-
-            newString = newString.Replace(noiseScaleLine, newNoiseScaleLine);
+            if(!string.IsNullOrEmpty(noiseScaleLine))
+            {
+                //Replace noise scale if the line was found
+                var newNoiseScaleLine = $"m_fl4NoiseScale = {GetLineValueFloat(noiseScaleLine) / 1000f}";
+                newString = newString.Replace(noiseScaleLine, newNoiseScaleLine);
+            }
 
             return newString;
         }

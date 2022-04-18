@@ -48,7 +48,7 @@ namespace KeyValue3Updater
         /// </summary>
         public static string GetLine(ref string input, string key)
         {
-            var match = Regex.Match(input, $"{key} = .+");
+            var match = Regex.Match(input, $"{key} = .+", RegexOptions.None, TimeSpan.FromSeconds(1));
             return match == null ? "" : match.Value;
         }
 
@@ -57,7 +57,7 @@ namespace KeyValue3Updater
         /// </summary>
         public static Regex GetBlockRegex(string blockClassName)
         {
-            return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled);
+            return new Regex(GetBlockRegexString(blockClassName), RegexOptions.Compiled, TimeSpan.FromSeconds(1));
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace KeyValue3Updater
         /// </summary>
         public int[] GetLineArrayValues(string line)
         {
-            var matches = Regex.Match(line, LineArrayValueRegex).Groups;
+            var matches = Regex.Match(line, LineArrayValueRegex, RegexOptions.None, TimeSpan.FromSeconds(1)).Groups;
             try
             {
                 int[] values = new int[3];

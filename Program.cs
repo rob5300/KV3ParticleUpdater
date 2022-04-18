@@ -114,8 +114,15 @@ void ProcessFile(string file, IEnumerable<Updater> updaters, StringBuilder logBu
 
     foreach (Updater updater in updaters)
     {
-        string changed = updater.Process(ref text);
-        text = changed;
+        try
+        {
+            string changed = updater.Process(ref text);
+            text = changed;
+        }
+        catch (RegexMatchTimeoutException timeout)
+        {
+            Log.WriteLine($"Updater '{updater.GetType().Name}' timed out for file '{file}'. Updater did not apply update. Is the file valid?");
+        }
     }
 
     string filename = Path.GetFileName(file);

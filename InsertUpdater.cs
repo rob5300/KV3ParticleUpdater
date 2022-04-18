@@ -13,7 +13,7 @@ namespace KeyValue3Updater
 
         public InsertUpdater() : base()
         {
-            insertBlockRegex = new Regex(InsertContainerBlockName + @" ?= ?\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            insertBlockRegex = new Regex(InsertContainerBlockName + @" ?= ?\n?", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.Multiline, TimeSpan.FromSeconds(1));
         }
 
         public override string Process(ref string input)

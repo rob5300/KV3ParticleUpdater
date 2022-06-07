@@ -13,8 +13,8 @@ namespace KeyValue3Updater.Updaters
 
         protected override string GetReplacement(ref string input)
         {
-            var radMin = GetLineValueFloat(GetLine(ref input, "m_flDegreesMin")) * DegToRad;
-            var radMax = GetLineValueFloat(GetLine(ref input, "m_flDegreesMax")) * DegToRad;
+            var radMin = GetLineValueFloat(GetLine(ref input, "m_flDegreesMin"));
+            var radMax = GetLineValueFloat(GetLine(ref input, "m_flDegreesMax"));
 
             return GetInitFloatString(ref input, radMin, radMax, outputField);
         }

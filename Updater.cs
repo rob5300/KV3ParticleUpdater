@@ -9,6 +9,7 @@ namespace KeyValue3Updater
     internal abstract class Updater
     {
         private const string LineValueRegex = @"(?<=\= ?""?)-?[0-9]{1,}.?[0-9]*(?=""?)";
+        private const string LineValueComplexRegex = @"(?<=\= ?""?)-?[0-9E+.]+(?=""?)";
         private const string LineArrayValueRegex = @"(?<=\[) ?(\d+), ?(\d+), ?(\d+) ?(?=\])";
 
         public const float DegToRad = (float)(Math.PI / 180);
@@ -85,6 +86,11 @@ namespace KeyValue3Updater
         public static string GetLineValue(string line)
         {
             return Regex.Match(line, LineValueRegex, RegexOptions.IgnoreCase).Value;
+        }
+
+        public static string GetLineValueComplex(string line)
+        {
+            return Regex.Match(line, LineValueComplexRegex, RegexOptions.IgnoreCase).Value;
         }
 
         public static string ReplaceLineValue(string line, string newValue)

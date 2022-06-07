@@ -1,4 +1,5 @@
 ﻿using KeyValue3Updater;
+using KeyValue3Updater.Updaters;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
@@ -7,7 +8,15 @@ using System.Text.RegularExpressions;
 //Find all Updaters to be used
 var currentAssembly = Assembly.GetCallingAssembly();
 var updaterType = typeof(Updater);
-var UpdaterTypes = currentAssembly.GetTypes().Where(x => !x.IsAbstract && x.IsSubclassOf(updaterType)).ToArray();
+var UpdaterTypes = currentAssembly.GetTypes().Where(x => !x.IsAbstract && x.IsSubclassOf(updaterType)).ToList();
+Config config = Config.Load();
+
+if(!config.Enable_InitFloat_4_RadToDeg)
+{
+    Console.WriteLine("Disabling C_INIT_InitFloat_4_RadToDeg...");
+    var t = typeof(C_INIT_InitFloatRadiansUpdater);
+    UpdaterTypes.RemoveAll((x) => x == t);
+}
 
 Console.WriteLine("KeyValue3Updater by rob5300. (github.com/rob5300/KeyValue3Updater)");
 Console.WriteLine("-= Input folder to update files in: (Press enter to begin. Leave blank to process the current folder)");
@@ -81,7 +90,7 @@ Console.ReadKey();
 void UpdateFiles(string[] fileList)
 {
     //Create a new set of updaters and log string builder.
-    List<Updater> updaters = new(UpdaterTypes.Length);
+    List<Updater> updaters = new(UpdaterTypes.Count);
     StringBuilder logBuilder = new();
 
     foreach (Type type in UpdaterTypes)

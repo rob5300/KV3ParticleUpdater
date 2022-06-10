@@ -3,6 +3,8 @@ Update old KeyValues3 particle features to new versions for S&Box.
 
 Made for TF:S2 so may not convert all particle features, but most should be covered.
 
+Special thanks to [justynboi](https://github.com/justynboi) for his work on working out how to translate many particle features to the S&Box versions.
+
 ## Adding new Updaters
 Check existing updaters to see how to make a new updater. Covered use cases are:
 

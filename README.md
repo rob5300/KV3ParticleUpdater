@@ -1,4 +1,4 @@
-# KeyValue3Updater for S&Box
+# KeyValue3 Particle Updater for S&Box
 Update old KeyValues3 particle features to new versions for S&Box.
 
 Made for TF:S2 so may not convert all particle features, but most should be covered.

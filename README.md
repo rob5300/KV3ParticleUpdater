@@ -1,6 +1,9 @@
 # KeyValue3 Particle Updater for S&Box
 Update old KeyValues3 particle features to new versions for S&Box.
 
+> [!WARNING]
+> KV3ParticleUpdater has not been updated since Sep 2022 and probably no longer works with modern sbox!
+
 Made for TF:S2 so may not convert all particle features, but most should be covered.
 
 Special thanks to [justyn0](https://github.com/justyn0) for his work on working out how to translate many particle features to the S&Box versions.
